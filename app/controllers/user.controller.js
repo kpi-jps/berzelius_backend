@@ -1,21 +1,24 @@
-const db = require("../models");
-const Contact = db.contact;
-// Adicionar um novo contato
+const db = require("../models/index");
+const User = db.users;
+// Adicionar um novo usuário ao sistema
 exports.create = (req, res) => {
-    // Verifica se existem as informações necessárias para adicionar um produto
-    if (!req.body.name || !req.body.email || !req.body.phone) {
+    // Verifica se existem as informações necessárias para adicionar um usuário
+    if (!req.body.name || !req.body.email || !req.body.login || !req.body.password || !req.body.adm || !req.body.inStock) {
         // Se não existir, retorna uma mensagem de erro.
         res.status(400).send({ msg: "Requisição incompleta: dados ausentes" });
         // Encerra a função.
         return;
     }
-    const contact = new Contact({
+    const user = new User({
         name: req.body.name,
         email: req.body.email,
-        phone: req.body.phone
+        login: req.body.login,
+        password: req.body.password,
+        adm: req.body.adm,
+        inStock: req.body.inStock
     });
-    // Depois de criado o objeto (aqui no caso um contato), vamos salvá-lo no banco de dados.
-    contact.save(contact).then(data => {
+    // Depois de criado o objeto (aqui no caso um usuário), vamos salvá-lo no banco de dados.
+    user.save(user).then(data => {
         // Caso o dado seja armazenado com sucesso, retorna o registro do MongoDB
             res.send(data)
         }).catch(err => {
@@ -26,65 +29,61 @@ exports.create = (req, res) => {
     });
 };
 
-// Retornar a lista de contatos
+// Retornar a lista de usuários
 exports.findAll = (req, res) => {
-    /* se condition estiver vazia = seleciona todos itens (neste caso contatos)
+    /* se condition estiver vazia = seleciona todos itens (neste caso usuários)
     é possível fazer seleções específicas adicionando condições específicas a variável
     condition*/
     var condition = {};
-    Contact.find(condition).then(data => {
+    User.find(condition).then(data => {
         res.send(data);
     }).catch(err => {
-        res.status(500).send({ msg: "Erro ao obter lista de contatos" })
+        res.status(500).send({ msg: "Erro ao obter lista de usuários" })
     });
 };
 
-// Retornar um produto específico
+// Retornar um contato específico específico
 exports.findOne = (req, res) => {
     /* 
-    Ao contrario de informações enviados pelo serviço, o "id" de cada produto
+    Ao contrario de informações enviados pelo serviço, o "id" de cada usuário
     é tratado automaticamente pelo Mongo/Mongoose. Por isso, não se usa req.body
     mas sim req.params 
     */
     const id = req.params.id;
-
-    Contact.findById(id).then(data => {
+    User.findById(id).then(data => {
         if (!data) {
-            res.status(404).send({ msg: "Contato não encontrado" });
+            res.status(404).send({ msg: "Usuário não encontrado" });
         } else {
             res.send(data);
         }
     }).catch(err => {
-        res.status(500).send({ msg: "Erro ao obter contato com id=" + id })
+        res.status(500).send({ msg: "Erro ao obter usuário com id=" + id })
     });
 };
 
-// Atualiza um produto
+// Atualiza um usuário
 exports.update = (req, res) => {
     if (!req.body) {
         res.status(400).send({ msg: "Dados inválidos" });
         return;
     }
-
     const id = req.params.id;
-
-    Contact.findByIdAndUpdate(id, req.body).then(data => {
+    User.findByIdAndUpdate(id, req.body).then(data => {
         if (!data) {
-            res.status(400).send({ msg: "Não foi possível atualizar o Produto" })
+            res.status(400).send({ msg: "Não foi possível atualizar os dados do usuário" })
         } else {
-            res.send({ msg: "Produto atualizado com sucesso" });
+            res.send({ msg: "Dados do usuário atualizados com sucesso" });
         }
     }).catch(err => {
-        res.status(500).send({ msg: "Erro ao atualizar o Produto" });
+        res.status(500).send({ msg: "Erro ao atualizar dados de usuário" });
     });
 
 };
 
-
-// Remover um contato específico
+// Remove um usuário específico
 exports.delete = (req, res) => {
     const id = req.params.id;
-    Contact.findByIdAndRemove(id).then(data => {
+    User.findByIdAndRemove(id).then(data => {
         if (!data) {
             res.status(400).send({ msg: "Não foi possível remover o Produto" });
         } else {
@@ -94,13 +93,3 @@ exports.delete = (req, res) => {
         res.status(500).send({ msg: "Erro ao deletar o Produto" });
     });
 };
-// Deletando todos os contatos
-exports.deleteAll = (req, res) => {
-    Contact.deleteMany({})
-      .then(data => {
-        res.send({ msg: `Todos o(s) ${data.deletedCount} contatos foram deletados!`});
-      })
-      .catch(err => {
-        res.status(500).send({ msg:"Algum erro ocorreu durante o processo." });
-      });
-  };

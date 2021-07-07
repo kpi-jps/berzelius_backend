@@ -35,7 +35,9 @@ db.mongoose
     process.exit();
   });
 
-require('./app/routes/contact.routes')(app);
+require('./app/routes/user.routes')(app);
+require('./app/routes/order.routes')(app);
+require('./app/routes/product.routes')(app);
 // "Executa" o servidor, escutando em uma porta específica.
 
 const PORT = process.env.PORT || 8080;
