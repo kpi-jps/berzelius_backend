@@ -3,6 +3,10 @@ module.exports = app => {
     var router = require('express').Router();
     // Insere novo contato
     router.post('/', user.create);
+
+    // concede acesso a usuário
+    router.post('/:id', user.getAccess);
+
     // Retorna todos contatos
     router.get('/', user.findAll);
 

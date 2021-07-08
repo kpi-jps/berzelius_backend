@@ -48,7 +48,7 @@ exports.findAll = (req, res) => {
     
 };
 
-// Retornar um contato específico 
+// Retornar um usuário específico 
 exports.findOne = (req, res) => {
     /* 
     Ao contrario de informações enviados pelo serviço, o "id" de cada usuário
@@ -99,5 +99,36 @@ exports.delete = (req, res) => {
         }
     }).catch(err => {
         res.status(500).send({ msg: "Erro ao deletar o Produto" });
+    });
+};
+
+
+// Concede ou não acesso a um usuário
+exports.getAccess = (req, res) => {
+    if (!req.body.login || !req.body.password) {
+        // Se não existir, retorna uma mensagem de erro.
+        res.status(400).send({ msg: "Requisição incompleta: dados ausentes" });
+        // Encerra a função.
+        return;
+    }
+    /* 
+    Ao contrario de informações enviados pelo serviço, o "id" de cada usuário
+    é tratado automaticamente pelo Mongo/Mongoose. Por isso, não se usa req.body
+    mas sim req.params 
+    */
+    const id = req.params.id;
+    const password = req.body.password;
+
+    User.findById(id).then(data => {
+        if (!data) {
+            res.status(404).send({ msg: "Usuário não encontrado" });
+        } else {
+            //comparando senha emcriptada.
+            bcrypt.compare(password, data.password, function(err, result) {
+                res.send({access: result, adm: data.adm});
+            }); 
+        }
+    }).catch(err => {
+        res.status(500).send({ msg: "Erro ao obter usuário com id=" + id })
     });
 };
