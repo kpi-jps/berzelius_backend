@@ -3,7 +3,7 @@ const Product = db.orders;
 // Adicionar um novo produto ao banco de dados
 exports.create = (req, res) => {
     // Verifica se existem as informações necessárias para adicionar o novo produto
-    if (!req.body.name || !req.body.description || !req.body.unity || !req.body.quantity) {
+    if (!req.body.name || !req.body.description || !req.body.unity || !req.body.quantity || !req.body.inStock) {
         // Se não existir, retorna uma mensagem de erro.
         res.status(400).send({ msg: "Requisição incompleta: dados ausentes" });
         // Encerra a função.
@@ -14,7 +14,8 @@ exports.create = (req, res) => {
         description: req.body.description,
         unity: req.body.unity,
         quantity: req.body.quantity,
-        obs: req.body.obs
+        obs: req.body.obs,
+        inStock: req.body.inStock
     });
     // Depois de criado o objeto (aqui no caso um produto), vamos salvá-lo no banco de dados.
     product.save(product).then(data => {
