@@ -1,5 +1,5 @@
 module.exports = app => {
-    const order = require('../controllers/user.controller');
+    const order = require('../controllers/order.controller');
     var router = require('express').Router();
     // Insere novo contato
     router.post('/', order.create);

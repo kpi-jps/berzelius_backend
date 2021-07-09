@@ -1,5 +1,5 @@
 const db = require("../models/index");
-const Product = db.orders;
+const Product = db.products;
 // Adicionar um novo produto ao banco de dados
 exports.create = (req, res) => {
     // Verifica se existem as informações necessárias para adicionar o novo produto

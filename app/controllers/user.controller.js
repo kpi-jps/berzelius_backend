@@ -61,7 +61,6 @@ exports.findOne = (req, res) => {
         if (!data) {
             res.status(404).send({ msg: "Usuário não encontrado" });
         } else {
-
             res.send(data);
         }
     }).catch(err => {
